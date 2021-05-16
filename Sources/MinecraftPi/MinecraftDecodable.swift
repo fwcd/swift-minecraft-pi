@@ -28,3 +28,13 @@ extension Double: MinecraftDecodable {
         return x
     }
 }
+
+extension Bool: MinecraftDecodable {
+    public static func minecraftDecoded(from raw: String) throws -> Self {
+        switch raw {
+        case "0": return false
+        case "1": return true
+        default: throw MinecraftDecodingError.couldNotDecode("Bool", raw)
+        }
+    }
+}

@@ -19,3 +19,7 @@ extension Float: MinecraftEncodable {
 extension Double: MinecraftEncodable {
     public var minecraftEncoded: String { String(self) }
 }
+
+extension Bool: MinecraftEncodable {
+    public var minecraftEncoded: String { self ? "1" : "0" }
+}

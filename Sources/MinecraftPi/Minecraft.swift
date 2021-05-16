@@ -45,7 +45,7 @@ public struct Minecraft {
         /// The player's precise position.
         public var pos: Vec3<Double> {
             get {
-                try! connection.call("getPos", [])
+                try! connection.call("getPos")
                 return try! connection.read()
             }
             set {
@@ -53,8 +53,24 @@ public struct Minecraft {
             }
         }
 
+        /// The player's nearest block.
+        public var tile: Vec3<Int> {
+            get {
+                try! connection.call("getTile")
+                return try! connection.read()
+            }
+            set {
+                try! connection.call("setTile", [newValue.x, newValue.y, newValue.z])
+            }
+        }
+
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+        }
+
+        /// Sets a setting on the player.
+        public func setting(_ key: MinecraftSetting, _ value: MinecraftEncodable) {
+            try! connection.call(key.minecraftEncoded, [value])
         }
     }
 

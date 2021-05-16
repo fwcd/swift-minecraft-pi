@@ -10,7 +10,7 @@ class MinecraftConnection {
         try socket.connect(to: host, port: port)
     }
 
-    func call(_ package: String, _ command: String, _ params: [MinecraftEncodable]) throws {
+    func call(_ package: String, _ command: String, _ params: [MinecraftEncodable] = []) throws {
         let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))\n"
         try socket.write(from: msg)
     }
@@ -34,7 +34,7 @@ class MinecraftConnection {
             self.package = package
         }
 
-        func call(_ command: String, _ params: [MinecraftEncodable]) throws {
+        func call(_ command: String, _ params: [MinecraftEncodable] = []) throws {
             try connection.call(package, command, params)
         }
 
