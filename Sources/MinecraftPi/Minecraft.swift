@@ -68,8 +68,12 @@ public struct Minecraft {
             self.connection = connection
         }
 
+        public enum Setting: String, MinecraftEncodable, MinecraftDecodable {
+            case autojump
+        }
+
         /// Sets a setting on the player.
-        public func setting(_ key: MinecraftSetting, _ value: MinecraftEncodable) {
+        public func setting(_ key: Setting, _ value: MinecraftEncodable) {
             try! connection.call(key.minecraftEncoded, [value])
         }
     }
