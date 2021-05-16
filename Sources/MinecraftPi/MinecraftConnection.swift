@@ -39,5 +39,9 @@ class MinecraftConnection {
         func read() throws -> String {
             try connection.read()
         }
+
+        func wrapper(for subpackage: String) -> Wrapper {
+            Wrapper(connection: connection, package: "\(package).\(subpackage)")
+        }
     }
 }
