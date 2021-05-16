@@ -24,6 +24,12 @@ extension Bool: MinecraftEncodable {
     public var minecraftEncoded: String { self ? "1" : "0" }
 }
 
+extension Array: MinecraftEncodable where Element: MinecraftEncodable {
+    public var minecraftEncoded: String {
+        map { $0.minecraftEncoded }.joined(separator: "|")
+    }
+}
+
 // Due to a limitation of Swift, we cannot directly conform RawRepresentable
 // implementations to our protocol.
 extension RawRepresentable where RawValue: MinecraftEncodable {

@@ -39,6 +39,13 @@ extension Bool: MinecraftDecodable {
     }
 }
 
+extension Array: MinecraftDecodable where Element: MinecraftDecodable {
+    public static func minecraftDecoded(from raw: String) throws -> Self {
+        let rawElements = raw.split(separator: "|")
+        return try rawElements.map { try Element.minecraftDecoded(from: String($0)) }
+    }
+}
+
 // Due to a limitation of Swift, we cannot directly conform RawRepresentable
 // implementations to our protocol.
 extension RawRepresentable where RawValue: MinecraftDecodable {

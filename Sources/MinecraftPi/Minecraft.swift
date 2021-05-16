@@ -21,6 +21,7 @@ public struct Minecraft {
         events = Events(connection: connection.wrapper(for: "events"))
     }
 
+    /// Connects to a running Minecraft Pi Edition instance on the given address.
     public static func connect(host: String = "localhost", port: Int32 = 4711) throws -> Self {
         Self(connection: try MinecraftConnection(host: host, port: port))
     }
@@ -88,8 +89,7 @@ public struct Minecraft {
 
         /// The entity ids of all connected players.
         public var playerIds: [Int] {
-            let raw: String = try! connection.read()
-            return raw.split(separator: "|").map { try! Int.minecraftDecoded(from: String($0)) }
+            try! connection.read()
         }
 
         init(connection: MinecraftConnection.Wrapper) {
@@ -253,13 +253,28 @@ public struct Minecraft {
     public struct Events {
         private let connection: MinecraftConnection.Wrapper
 
+        public let block: Block
+
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+
+            block = Block(connection: connection.wrapper(for: "block"))
         }
 
         /// Clears old events.
         public func clear() {
             try! connection.call("clear")
+        }
+
+        /// Block-related events.
+        public struct Block {
+            private let connection: MinecraftConnection.Wrapper
+
+            /// Events triggered by right-clicking with a sword on blocks.
+
+            init(connection: MinecraftConnection.Wrapper) {
+                self.connection = connection
+            }
         }
     }
 }
