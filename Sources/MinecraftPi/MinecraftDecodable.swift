@@ -38,3 +38,12 @@ extension Bool: MinecraftDecodable {
         }
     }
 }
+
+// Due to a limitation of Swift, we cannot directly conform RawRepresentable
+// implementations to our protocol.
+extension RawRepresentable where RawValue == String {
+    public static func minecraftDecoded(from raw: String) throws -> Self {
+        guard let x = Self(rawValue: raw) else { throw MinecraftDecodingError.couldNotDecode("RawRepresentable", raw) }
+        return x
+    }
+}
