@@ -17,3 +17,81 @@ public struct Vec2<T>: Hashable, MinecraftEncodable, MinecraftDecodable
         )
     }
 }
+
+extension Vec2: AdditiveArithmetic where T: AdditiveArithmetic {
+    public static var zero: Self { Vec2() }
+
+    public static func +(lhs: Self, rhs: Self) -> Self {
+        Vec2<T>(x: lhs.x + rhs.x, z: lhs.z + rhs.z)
+    }
+
+    public static func -(lhs: Self, rhs: Self) -> Self {
+        Vec2<T>(x: lhs.x - rhs.x, z: lhs.z - rhs.z)
+    }
+
+    public static func +=(lhs: inout Self, rhs: Self) {
+        lhs.x += rhs.x
+        lhs.z += rhs.z
+    }
+
+    public static func -=(lhs: inout Self, rhs: Self) {
+        lhs.x -= rhs.x
+        lhs.z -= rhs.z
+    }
+}
+
+extension Vec2 where T: Numeric {
+    public static func *(lhs: T, rhs: Self) -> Self {
+        Vec2<T>(x: lhs * rhs.x, z: lhs * rhs.z)
+    }
+
+    public static func *(lhs: Self, rhs: T) -> Self {
+        Vec2<T>(x: lhs.x * rhs, z: lhs.z * rhs)
+    }
+
+    public static func *=(lhs: inout Self, rhs: T) {
+        lhs.x *= rhs
+        lhs.z *= rhs
+    }
+}
+
+extension Vec2 where T: SignedNumeric {
+    public mutating func negate() {
+        x.negate()
+        z.negate()
+    }
+
+    public static prefix func -(operand: Self) -> Self {
+        Vec2<T>(x: -operand.x, z: -operand.z)
+    }
+}
+
+// Swift has no numeric protocol for '/', so we need to specialize here
+
+extension Vec2 where T == Double {
+    var asInt: Vec2<Int> { Vec2<Int>(x: Int(x), z: Int(z)) }
+    var magnitude: Double { (x * x + z * z).squareRoot() }
+
+    public static func /(lhs: Self, rhs: T) -> Self {
+        Vec2<T>(x: lhs.x / rhs, z: lhs.z / rhs)
+    }
+
+    public static func /=(lhs: inout Self, rhs: T) {
+        lhs.x /= rhs
+        lhs.z /= rhs
+    }
+}
+
+extension Vec2 where T == Int {
+    var asDouble: Vec2<Double> { Vec2<Double>(x: Double(x), z: Double(z)) }
+    var magnitude: Double { asDouble.magnitude }
+
+    public static func /(lhs: Self, rhs: T) -> Self {
+        Vec2<T>(x: lhs.x / rhs, z: lhs.z / rhs)
+    }
+
+    public static func /=(lhs: inout Self, rhs: T) {
+        lhs.x /= rhs
+        lhs.z /= rhs
+    }
+}
