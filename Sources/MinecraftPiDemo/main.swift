@@ -6,9 +6,6 @@ let mc = try! Minecraft.connect()
 // Post a message to the in-game-chat
 mc.chat.post("Hello world!")
 
-// Print the block the player is standing on.
-print()
-
 while true {
     Thread.sleep(forTimeInterval: 0.1)
 

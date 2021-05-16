@@ -11,7 +11,16 @@ It also provides a great environment for learning to program Swift on a Raspberr
 ```swift
 import MinecraftPi
 
+// Connect to the running Minecraft Pi instance
 let mc = try! Minecraft.connect()
 
+// Post a message to the in-game-chat
 mc.chat.post("Hello world!")
+
+// Fetch the player's block position
+let pos = mc.player.tile
+
+// Place a few blocks
+mc.world.setBlock(at: pos + Vec3(x: 10), to: .wood)
+mc.world.setBlocks(between: pos + Vec3(x: 11), and: pos + Vec3(x: 14, y: 1), to: .glass)
 ```
