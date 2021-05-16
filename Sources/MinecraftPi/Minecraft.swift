@@ -5,7 +5,7 @@ public struct Minecraft {
 
     public let chat: Chat
     public let player: Player
-    public let entity: Entity
+    public let entities: Entities
     public let world: World
     public let camera: Camera
     public let events: Events
@@ -15,7 +15,7 @@ public struct Minecraft {
 
         chat = Chat(connection: connection.wrapper(for: "chat"))
         player = Player(connection: connection.wrapper(for: "player"))
-        entity = Entity(connection: connection.wrapper(for: "entity"))
+        entities = Entities(connection: connection.wrapper(for: "entity"))
         world = World(connection: connection.wrapper(for: "world"))
         camera = Camera(connection: connection.wrapper(for: "camera"))
         events = Events(connection: connection.wrapper(for: "events"))
@@ -167,11 +167,33 @@ public struct Minecraft {
     }
 
     /// The entities in the game.
-    public struct Entity {
+    public struct Entities {
         private let connection: MinecraftConnection.Wrapper
 
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+        }
+
+        /// Fetches the block position of the given entity.
+        public func getTile(of entityId: Int) -> Vec3<Int> {
+            try! connection.call("getTile", [entityId])
+            return try! connection.read()
+        }
+
+        /// Sets the block position of the given entity.
+        public func setTile(of entityId: Int, to pos: Vec3<Int>) {
+            try! connection.call("setTile", [entityId, pos])
+        }
+
+        /// Fetches the exact position of the given entity.
+        public func getPos(of entityId: Int) -> Vec3<Double> {
+            try! connection.call("getPos", [entityId])
+            return try! connection.read()
+        }
+
+        /// Sets the exact position of the given entity.
+        public func setPos(of entityId: Int, to pos: Vec3<Double>) {
+            try! connection.call("setPos", [entityId, pos])
         }
     }
 
@@ -206,7 +228,7 @@ public struct Minecraft {
             }
 
             /// Switches to third-person camera mode following the given entity.
-            public func setFollow(entityId: Int) {
+            public func setFollow(_ entityId: Int) {
                 try! connection.call("setFollow", [entityId])
             }
 
@@ -233,6 +255,11 @@ public struct Minecraft {
 
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+        }
+
+        /// Clears old events.
+        public func clear() {
+            try! connection.call("clear")
         }
     }
 }
