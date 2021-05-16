@@ -11,13 +11,13 @@ class MinecraftConnection {
     }
 
     func call(_ package: String, _ command: String, _ params: [MinecraftEncodable]) throws {
-        let msg = "\(package).\(command)(\(params.map { $0.encoded() }.joined(separator: ",")))\n"
+        let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))\n"
         try socket.write(from: msg)
     }
 
     func read<D>() throws -> D where D: MinecraftDecodable {
         guard let raw = try socket.readString()?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
-        return try D.decoded(from: raw)
+        return try D.minecraftDecoded(from: raw)
     }
 
     func wrapper(for package: String) -> Wrapper {

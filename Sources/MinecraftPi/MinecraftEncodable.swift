@@ -1,21 +1,21 @@
 /// Represents something that can be converted to a
 /// string representation in the MCPI protocol.
-protocol MinecraftEncodable {
-    func encoded() -> String
+public protocol MinecraftEncodable {
+    var minecraftEncoded: String { get }
 }
 
 extension String: MinecraftEncodable {
-    func encoded() -> String { self }
+    public var minecraftEncoded: String { self }
 }
 
 extension Int: MinecraftEncodable {
-    func encoded() -> String { String(self) }
+    public var minecraftEncoded: String { String(self) }
 }
 
 extension Float: MinecraftEncodable {
-    func encoded() -> String { String(self) }
+    public var minecraftEncoded: String { String(self) }
 }
 
 extension Double: MinecraftEncodable {
-    func encoded() -> String { String(self) }
+    public var minecraftEncoded: String { String(self) }
 }
