@@ -1,4 +1,5 @@
 import Socket
+import Foundation
 
 /// A connection to the running Minecraft Pi instance.
 class MinecraftConnection {
@@ -9,13 +10,14 @@ class MinecraftConnection {
         try socket.connect(to: host, port: port)
     }
 
-    func call(_ package: String, _ command: String, _ params: [String]) throws {
-        try socket.write(from: "\(package).\(command)(\(params.joined(separator: ",")))\n")
+    func call(_ package: String, _ command: String, _ params: [MinecraftEncodable]) throws {
+        let msg = "\(package).\(command)(\(params.map { $0.encoded() }.joined(separator: ",")))\n"
+        try socket.write(from: msg)
     }
 
-    func read() throws -> String {
-        guard let s = try socket.readString() else { throw MinecraftConnectionError.couldNotRead }
-        return s
+    func read<D>() throws -> D where D: MinecraftDecodable {
+        guard let raw = try socket.readString()?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
+        return try D.decoded(from: raw)
     }
 
     func wrapper(for package: String) -> Wrapper {
