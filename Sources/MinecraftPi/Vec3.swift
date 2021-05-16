@@ -1,9 +1,9 @@
 /// A 3D vector, e.g. representing a position in the Minecraft world.
 public struct Vec3<T>: Hashable, MinecraftEncodable, MinecraftDecodable
     where T: Hashable & MinecraftEncodable & MinecraftDecodable {
-    public let x: T
-    public let y: T
-    public let z: T
+    public var x: T
+    public var y: T
+    public var z: T
 
     public static func minecraftDecoded(from raw: String) throws -> Self {
         let components = raw.split(separator: ",").map(String.init)
