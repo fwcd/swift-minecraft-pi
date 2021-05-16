@@ -1,5 +1,8 @@
 import Socket
 import Foundation
+import Logging
+
+private let log = Logger(label: "MinecraftConnection")
 
 /// A connection to the running Minecraft Pi instance.
 class MinecraftConnection {
@@ -13,14 +16,15 @@ class MinecraftConnection {
 
     /// Writes the given method call.
     func call(_ package: String, _ command: String, _ params: [MinecraftEncodable] = []) throws {
-        let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))\n"
-        try socket.write(from: msg)
+        let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))"
+        log.info("Calling '\(msg)'")
+        try socket.write(from: "\(msg)\n")
     }
 
     /// Reads the next line and decodes it to a custom object.
     func read<D>() throws -> D where D: MinecraftDecodable {
         repeat {
-            try socket.read(into: &buffer)
+            _ = try socket.read(into: &buffer)
         } while try socket.isReadableOrWritable().readable
 
         var lineData = Data()
@@ -30,6 +34,7 @@ class MinecraftConnection {
         }
 
         guard let rawLine = String(data: lineData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
+        log.info("Got '\(rawLine)'")
 
         return try D.minecraftDecoded(from: rawLine)
     }
