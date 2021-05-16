@@ -4,20 +4,34 @@ import Foundation
 /// A connection to the running Minecraft Pi instance.
 class MinecraftConnection {
     private let socket: Socket
+    private var buffer: Data = Data()
 
     init(host: String, port: Int32) throws {
         socket = try Socket.create()
         try socket.connect(to: host, port: port)
     }
 
+    /// Writes the given method call.
     func call(_ package: String, _ command: String, _ params: [MinecraftEncodable] = []) throws {
         let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))\n"
         try socket.write(from: msg)
     }
 
+    /// Reads the next line and decodes it to a custom object.
     func read<D>() throws -> D where D: MinecraftDecodable {
-        guard let raw = try socket.readString()?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
-        return try D.minecraftDecoded(from: raw)
+        repeat {
+            try socket.read(into: &buffer)
+        } while try socket.isReadableOrWritable().readable
+
+        var lineData = Data()
+
+        while let b = buffer.popFirst(), b != 0x0A { // ASCII line feed
+            lineData.append(b)
+        }
+
+        guard let rawLine = String(data: lineData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
+
+        return try D.minecraftDecoded(from: rawLine)
     }
 
     func wrapper(for package: String) -> Wrapper {

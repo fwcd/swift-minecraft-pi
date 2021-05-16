@@ -272,7 +272,8 @@ public struct Minecraft {
 
             /// Events triggered by right-clicking with a sword on blocks.
             public var hits: [MinecraftBlockHitEvent] {
-                try! connection.read()
+                try! connection.call("hits")
+                return try! connection.read()
             }
 
             init(connection: MinecraftConnection.Wrapper) {

@@ -1,9 +1,13 @@
 import MinecraftPi
+import Foundation
 
 let mc = try! Minecraft.connect()
 
-// Post a message to the in-game chat
+// Post a message to the in-game-chat
 mc.chat.post("Hello world!")
 
-// Print previous block events
-print(mc.events.block.hits)
+// Repeatedly poll block hit events
+while true {
+    Thread.sleep(forTimeInterval: 1)
+    print(mc.events.block.hits)
+}
