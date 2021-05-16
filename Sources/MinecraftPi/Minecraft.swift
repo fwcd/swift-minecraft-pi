@@ -49,7 +49,7 @@ public struct Minecraft {
                 return try! connection.read()
             }
             set {
-                try! connection.call("setPos", [newValue.x, newValue.y, newValue.z])
+                try! connection.call("setPos", [newValue])
             }
         }
 
@@ -60,7 +60,7 @@ public struct Minecraft {
                 return try! connection.read()
             }
             set {
-                try! connection.call("setTile", [newValue.x, newValue.y, newValue.z])
+                try! connection.call("setTile", [newValue])
             }
         }
 
@@ -93,8 +93,28 @@ public struct Minecraft {
 
         /// Fetches the block at the specified position.
         public func getBlock(at pos: Vec3<Int>) -> MinecraftBlock {
-            try! connection.call("getBlock", [pos.x, pos.y, pos.z])
+            try! connection.call("getBlockWithData", [pos])
             return try! connection.read()
+        }
+
+        /// Sets the block at the given position to the specified block type.
+        public func setBlock(at pos: Vec3<Int>, to blockType: MinecraftBlock.BlockType) {
+            setBlock(at: pos, to: MinecraftBlock(type: blockType))
+        }
+
+        /// Sets the block at the given position.
+        public func setBlock(at pos: Vec3<Int>, to block: MinecraftBlock) {
+            try! connection.call("setBlock", [pos, block])
+        }
+
+        /// Sets all blocks in the cuboid defined by the given two corners to the specified block type.
+        public func setBlocks(between corner1: Vec3<Int>, and corner2: Vec3<Int>, to blockType: MinecraftBlock.BlockType) {
+            setBlocks(between: corner1, and: corner2, to: MinecraftBlock(type: blockType))
+        }
+
+        /// Sets all blocks in the cuboid defined by the given two corners.
+        public func setBlocks(between corner1: Vec3<Int>, and corner2: Vec3<Int>, to block: MinecraftBlock) {
+            try! connection.call("setBlocks", [corner1, corner2, block])
         }
     }
 
