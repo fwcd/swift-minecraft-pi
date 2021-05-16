@@ -42,6 +42,17 @@ public struct Minecraft {
     public struct Player {
         private let connection: MinecraftConnection.Wrapper
 
+        /// The player's precise position.
+        public var pos: Vec3<Double> {
+            get {
+                try! connection.call("getPos", [])
+                return try! connection.read()
+            }
+            set {
+                try! connection.call("setPos", [newValue.x, newValue.y, newValue.z])
+            }
+        }
+
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
         }

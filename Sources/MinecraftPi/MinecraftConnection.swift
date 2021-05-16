@@ -34,11 +34,11 @@ class MinecraftConnection {
             self.package = package
         }
 
-        func call(_ command: String, _ params: [String]) throws {
+        func call(_ command: String, _ params: [MinecraftEncodable]) throws {
             try connection.call(package, command, params)
         }
 
-        func read() throws -> String {
+        func read<D>() throws -> D where D: MinecraftDecodable {
             try connection.read()
         }
 
