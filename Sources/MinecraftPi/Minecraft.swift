@@ -179,8 +179,51 @@ public struct Minecraft {
     public struct Camera {
         private let connection: MinecraftConnection.Wrapper
 
+        public let mode: Mode
+
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+            
+            mode = Mode(connection: connection.wrapper(for: "mode"))
+        }
+
+        /// The camera's mode.
+        public struct Mode {
+            private let connection: MinecraftConnection.Wrapper
+
+            init(connection: MinecraftConnection.Wrapper) {
+                self.connection = connection
+            }
+
+            /// Switches to normal camera mode.
+            public func setNormal() {
+                try! connection.call("setNormal")
+            }
+
+            /// Switches to third-person camera mode.
+            public func setThirdPerson() {
+                try! connection.call("setFollow")
+            }
+
+            /// Switches to third-person camera mode following the given entity.
+            public func setFollow(entityId: Int) {
+                try! connection.call("setFollow", [entityId])
+            }
+
+            /// Switches to a fixed camera position.
+            public func setFixed() {
+                try! connection.call("setFixed")
+            }
+
+            /// Sets the camera position explicitly.
+            public func setPos(x: Double, y: Double, z: Double) {
+                setPos(to: Vec3(x: x, y: y, z: z))
+            }
+
+            /// Sets the camera position explicitly.
+            public func setPos(to pos: Vec3<Double>) {
+                try! connection.call("setPos", [pos])
+            }
         }
     }
 
