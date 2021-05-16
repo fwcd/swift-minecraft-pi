@@ -1,8 +1,8 @@
 import Socket
 
 /// A connection to the running Minecraft Pi instance.
-struct MinecraftConnection {
-    let socket: Socket
+class MinecraftConnection {
+    private let socket: Socket
 
     init(host: String, port: Int32) throws {
         socket = try Socket.create()
@@ -16,5 +16,27 @@ struct MinecraftConnection {
     func read() throws -> String {
         guard let s = try socket.readString() else { throw MinecraftConnectionError.noRead }
         return s
+    }
+
+    func wrapper(for package: String) -> Wrapper {
+        Wrapper(connection: self, package: package)
+    }
+
+    struct Wrapper {
+        private let connection: MinecraftConnection
+        private let package: String
+
+        init(connection: MinecraftConnection, package: String) {
+            self.connection = connection
+            self.package = package
+        }
+
+        func call(_ command: String, _ params: [String]) throws {
+            try connection.call(package, command, params)
+        }
+
+        func read() throws -> String {
+            try connection.read()
+        }
     }
 }
