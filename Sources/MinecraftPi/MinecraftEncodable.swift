@@ -26,6 +26,6 @@ extension Bool: MinecraftEncodable {
 
 // Due to a limitation of Swift, we cannot directly conform RawRepresentable
 // implementations to our protocol.
-extension RawRepresentable where RawValue == String {
-    public var minecraftEncoded: String { rawValue }
+extension RawRepresentable where RawValue: MinecraftEncodable {
+    public var minecraftEncoded: String { rawValue.minecraftEncoded }
 }

@@ -85,6 +85,17 @@ public struct Minecraft {
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
         }
+
+        /// Fetches the block at the specified position.
+        public func getBlock(x: Int, y: Int, z: Int) -> MinecraftBlock {
+            return getBlock(at: Vec3(x: x, y: y, z: z))
+        }
+
+        /// Fetches the block at the specified position.
+        public func getBlock(at pos: Vec3<Int>) -> MinecraftBlock {
+            try! connection.call("getBlock", [pos.x, pos.y, pos.z])
+            return try! connection.read()
+        }
     }
 
     /// The entities in the game.
