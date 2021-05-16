@@ -17,7 +17,7 @@ class MinecraftConnection {
     /// Writes the given method call.
     func call(_ package: String, _ command: String, _ params: [MinecraftEncodable] = []) throws {
         let msg = "\(package).\(command)(\(params.map { $0.minecraftEncoded }.joined(separator: ",")))"
-        log.info("Calling '\(msg)'")
+        log.debug("Calling '\(msg)'")
         try socket.write(from: "\(msg)\n")
     }
 
@@ -34,7 +34,7 @@ class MinecraftConnection {
         }
 
         guard let rawLine = String(data: lineData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw MinecraftConnectionError.couldNotRead }
-        log.info("Got '\(rawLine)'")
+        log.debug("Got '\(rawLine)'")
 
         return try D.minecraftDecoded(from: rawLine)
     }

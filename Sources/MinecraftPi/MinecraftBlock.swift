@@ -3,7 +3,7 @@ public struct MinecraftBlock: Hashable, MinecraftEncodable, MinecraftDecodable {
     public var type: BlockType
     public var data: BlockData? = nil
 
-    public enum BlockType: Int, Hashable, CustomStringConvertible, MinecraftEncodable, MinecraftDecodable {
+    public enum BlockType: Int, Hashable, MinecraftEncodable, MinecraftDecodable {
         case air = 0
         case stone = 1
         case grass = 2
@@ -109,10 +109,6 @@ public struct MinecraftBlock: Hashable, MinecraftEncodable, MinecraftDecodable {
         case doorDarkOak = 197
         case glowingObsidian = 246
         case netherReactorCore = 247
-
-        public var description: String {
-            ".\(String(reflecting: self).split(separator: ".").last!)"
-        }
     }
 
     public struct BlockData: Hashable, RawRepresentable, MinecraftEncodable, MinecraftDecodable {
