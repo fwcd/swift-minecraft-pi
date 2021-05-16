@@ -1,4 +1,5 @@
 /// The high-level API for interfacing with Minecraft Pi.
+/// Protocol reference: https://wiki.vg/Minecraft_Pi_Protocol
 public struct Minecraft {
     private let connection: MinecraftConnection
 
@@ -82,6 +83,12 @@ public struct Minecraft {
     public struct World {
         private let connection: MinecraftConnection.Wrapper
 
+        /// The entity ids of all connected players.
+        public var playerIds: [Int] {
+            let raw: String = try! connection.read()
+            return raw.split(separator: "|").map { try! Int.minecraftDecoded(from: String($0)) }
+        }
+
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
         }
@@ -115,6 +122,12 @@ public struct Minecraft {
         /// Sets all blocks in the cuboid defined by the given two corners.
         public func setBlocks(between corner1: Vec3<Int>, and corner2: Vec3<Int>, to block: MinecraftBlock) {
             try! connection.call("setBlocks", [corner1, corner2, block])
+        }
+
+        /// Fetches the y-coordinate of the topmost non-solid block.
+        public func getHeight(at pos: Vec2<Int>) -> Int {
+            try! connection.call("getHeight", [pos])
+            return try! connection.read()
         }
     }
 
