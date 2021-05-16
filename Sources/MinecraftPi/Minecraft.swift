@@ -2,12 +2,16 @@
 public struct Minecraft {
     private let connection: MinecraftConnection
 
-    let chat: Chat
+    public let chat: Chat
 
-    public init(host: String = "localhost", port: Int32 = 4711) throws {
-        connection = try MinecraftConnection(host: host, port: port)
+    init(connection: MinecraftConnection) {
+        self.connection = connection
 
-        chat = Chat(connection: connection.wrapper(for: "world"))
+        chat = Chat(connection: connection.wrapper(for: "chat"))
+    }
+
+    public static func connect(host: String = "localhost", port: Int32 = 4711) throws -> Self {
+        Self(connection: try MinecraftConnection(host: host, port: port))
     }
 
     public struct Chat {
@@ -17,7 +21,7 @@ public struct Minecraft {
             self.connection = connection
         }
 
-        func post(_ message: String) {
+        public func post(_ message: String) {
             try! connection.call("post", [message])
         }
     }

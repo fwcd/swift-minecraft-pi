@@ -11,6 +11,10 @@ let package = Package(
             name: "MinecraftPi",
             targets: ["MinecraftPi"]
         ),
+        .executable(
+            name: "MinecraftPiDemo",
+            targets: ["MinecraftPiDemo"]
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -22,6 +26,10 @@ let package = Package(
         .target(
             name: "MinecraftPi",
             dependencies: ["Socket"]
+        ),
+        .target(
+            name: "MinecraftPiDemo",
+            dependencies: ["MinecraftPi"]
         ),
         .testTarget(
             name: "MinecraftPiTests",
