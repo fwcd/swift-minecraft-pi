@@ -69,19 +69,22 @@ public struct Minecraft {
             self.connection = connection
         }
 
+        /// A player setting.
         public enum Setting: String, MinecraftEncodable, MinecraftDecodable {
             case autojump
         }
 
         /// Sets a setting on the player.
         public func setting(_ key: Setting, _ value: MinecraftEncodable) {
-            try! connection.call(key.minecraftEncoded, [value])
+            try! connection.call("setting", [key, value])
         }
     }
 
     /// The world and terrain.
     public struct World {
         private let connection: MinecraftConnection.Wrapper
+
+        public let checkpoint: Checkpoint
 
         /// The entity ids of all connected players.
         public var playerIds: [Int] {
@@ -91,6 +94,8 @@ public struct Minecraft {
 
         init(connection: MinecraftConnection.Wrapper) {
             self.connection = connection
+
+            checkpoint = Checkpoint(connection: connection.wrapper(for: "checkpoint"))
         }
 
         /// Fetches the block at the specified position.
@@ -128,6 +133,36 @@ public struct Minecraft {
         public func getHeight(at pos: Vec2<Int>) -> Int {
             try! connection.call("getHeight", [pos])
             return try! connection.read()
+        }
+
+        /// A world setting.
+        public enum Setting: String, MinecraftEncodable, MinecraftDecodable {
+            case worldImmutable = "world_immutable"
+            case nametagsVisible = "nametags_visible"
+        }
+
+        /// Sets a setting of the world.
+        public func setting(_ key: Setting, _ value: MinecraftEncodable) {
+            try! connection.call("setting", [key, value])
+        }
+
+        /// A facility for saving/restoring the world state.
+        public struct Checkpoint {
+            private let connection: MinecraftConnection.Wrapper
+
+            init(connection: MinecraftConnection.Wrapper) {
+                self.connection = connection
+            }
+
+            /// Saves a checkpoint that can be used to restore the world state.
+            public func save() {
+                try! connection.call("save")
+            }
+
+            /// Restores the world to the last checkpoint.
+            public func restore() {
+                try! connection.call("restore")
+            }
         }
     }
 
