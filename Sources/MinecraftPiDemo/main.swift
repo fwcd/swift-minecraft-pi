@@ -6,12 +6,16 @@ let mc = try! Minecraft.connect()
 // Post a message to the in-game-chat
 mc.chat.post("Hello world!")
 
-// Print the block the player is standing in.
-let tile = mc.player.tile
-print(mc.world.getBlock(at: tile))
+// Print the block the player is standing on.
+print()
 
-// Repeatedly poll block hit events
+// Repeatedly poll information about the player
 while true {
     Thread.sleep(forTimeInterval: 1)
-    print(mc.events.block.hits)
+
+    let hits = mc.events.block.hits
+    let belowPlayer = mc.world.getBlock(at: mc.player.tile - Vec3(y: 1))
+    let pos = mc.player.pos
+
+    print("Hits: \(hits.count), block: \(belowPlayer.type), x: \(pos.x), y: \(pos.y), z: \(pos.z)")
 }
