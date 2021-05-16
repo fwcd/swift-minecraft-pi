@@ -1,9 +1,9 @@
 /// A block type in the Minecraft world.
-public struct MinecraftBlock: MinecraftEncodable, MinecraftDecodable {
+public struct MinecraftBlock: Hashable, MinecraftEncodable, MinecraftDecodable {
     public var type: BlockType
     public var data: BlockData? = nil
 
-    public struct BlockType: RawRepresentable, MinecraftEncodable, MinecraftDecodable {
+    public struct BlockType: Hashable, RawRepresentable, MinecraftEncodable, MinecraftDecodable {
         public var rawValue: Int
 
         public static let air = Self(rawValue: 0)
@@ -117,7 +117,7 @@ public struct MinecraftBlock: MinecraftEncodable, MinecraftDecodable {
         }
     }
 
-    public struct BlockData: RawRepresentable, MinecraftEncodable, MinecraftDecodable {
+    public struct BlockData: Hashable, RawRepresentable, MinecraftEncodable, MinecraftDecodable {
         public var rawValue: Int
 
         public init(rawValue: Int) {
