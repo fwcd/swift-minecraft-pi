@@ -1,3 +1,3 @@
 enum MinecraftConnectionError: Error {
-    case noRead
+    case couldNotRead
 }

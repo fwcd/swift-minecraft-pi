@@ -14,7 +14,7 @@ class MinecraftConnection {
     }
 
     func read() throws -> String {
-        guard let s = try socket.readString() else { throw MinecraftConnectionError.noRead }
+        guard let s = try socket.readString() else { throw MinecraftConnectionError.couldNotRead }
         return s
     }
 
