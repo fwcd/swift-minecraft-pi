@@ -22,6 +22,7 @@ class MinecraftConnection {
         Wrapper(connection: self, package: package)
     }
 
+    /// A wrapper around a connection for calling methods of a certain package.
     struct Wrapper {
         private let connection: MinecraftConnection
         private let package: String

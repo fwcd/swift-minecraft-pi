@@ -1,3 +1,4 @@
+/// The high-level API for interfacing with Minecraft Pi.
 public struct Minecraft {
     private let connection: MinecraftConnection
 
